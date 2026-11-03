@@ -135,24 +135,15 @@
           </div>
 
           <div class="settings-card cloud-card">
-            <div class="settings-card-heading"><span class="settings-icon">☁</span><div><h2>Cloud sync <span class="coming-pill">SETUP REQUIRED</span></h2><p>Cloud storage is optional; local lessons remain available without it.</p></div></div>
-            <p class="settings-footnote">Cloud sign-in and sync need a Supabase project and Google OAuth configuration. They are not active until configured; your lesson data is not sent to Supabase by this app.</p>
-            <div class="notice notice-warm cloud-warning"><strong>Never enter a service-role key here.</strong> Use only your Supabase project URL and public anon/publishable key. Row-level security protects each account’s records.</div>
-            <form id="cloud-settings-form" class="ai-settings-form">
-              <label>Supabase project URL
-                <input id="cloud-project-url" type="url" autocomplete="url" spellcheck="false" placeholder="https://your-project.supabase.co">
-              </label>
-              <label>Public anon / publishable key
-                <input id="cloud-public-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste the public project key">
-              </label>
-              <div class="form-actions cloud-actions">
-                <button class="primary-button" type="submit">Save cloud settings</button>
-                <button class="secondary-button" id="cloud-sign-in-button" type="button">Continue with Google</button>
-                <button class="secondary-button" id="cloud-sync-button" type="button" disabled>Sync now</button>
-                <button class="text-button" id="cloud-sign-out-button" type="button" hidden>Sign out</button>
-                <span class="form-feedback" id="cloud-status" role="status" aria-live="polite">Not configured. Local storage remains active.</span>
-              </div>
-            </form>
+            <div class="settings-card-heading"><span class="settings-icon">☁</span><div><h2>Cloud sync <span class="coming-pill">OPTIONAL</span></h2><p>Cloud storage is optional; local lessons remain available without it.</p></div></div>
+            <p class="settings-footnote">Sign in with Google to sync your lessons with your account. Your lessons are not sent to Supabase until you choose “Sync now.”</p>
+            <div class="notice notice-warm cloud-warning"><strong>About cloud configuration.</strong> This app uses a shared Supabase project and public publishable key, so users don’t need to configure their own. These values are visible in a browser app; row-level security protects each account’s records. Never put a Supabase secret/service-role key here.</div>
+            <div class="form-actions cloud-actions">
+              <button class="secondary-button" id="cloud-sign-in-button" type="button">Continue with Google</button>
+              <button class="secondary-button" id="cloud-sync-button" type="button" disabled>Sync now</button>
+              <button class="text-button" id="cloud-sign-out-button" type="button" hidden>Sign out</button>
+              <span class="form-feedback" id="cloud-status" role="status" aria-live="polite">Cloud sync is ready. Sign in with Google to connect.</span>
+            </div>
             <p class="settings-footnote">Sign-in does not sync automatically. Choose “Sync now” to merge this device with your account. Install the SQL policies and configure Google OAuth before connecting; see <a href="./SETUP.md" target="_blank" rel="noopener">setup instructions</a>.</p>
           </div>
           <p class="version-note">Ope' Code Vault · Local-first · Install from your browser menu when served on localhost or HTTPS</p>
