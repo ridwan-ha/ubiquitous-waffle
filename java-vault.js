@@ -3,7 +3,10 @@
 (() => {
   const STORAGE_KEY = "java-vault-library-v1";
   const AI_SETTINGS_KEY = "java-vault-ai-settings-v1";
-  const CLOUD_SETTINGS_KEY = "java-vault-cloud-settings-v1";
+  const CLOUD_CONFIG = Object.freeze({
+    projectUrl: "https://qlfktmiqjjssrfhjfoyp.supabase.co",
+    publicKey: "sb_publishable_U-JTvmVNWBk-ms6GR9h1cQ_cFSWwRvc"
+  });
   const BACKUP_EXPORTED_KEY = "java-vault-last-backup-export-v1";
   const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
   const MAX_LESSONS = 5000;
@@ -982,15 +985,9 @@
 
   function readCloudSettings() {
     try {
-      const saved = JSON.parse(localStorage.getItem(CLOUD_SETTINGS_KEY) || "{}");
-      const projectUrl = typeof saved.projectUrl === "string" ? saved.projectUrl : "";
-      const publicKey = typeof saved.publicKey === "string" ? saved.publicKey : "";
-      byId("cloud-project-url").value = projectUrl;
-      byId("cloud-public-key").value = publicKey;
-      updateCloudButtons(Boolean(projectUrl && publicKey));
-      byId("cloud-status").textContent = projectUrl && publicKey
-        ? "Configured. Sign in with Google to connect."
-        : "Not configured. Local storage remains active.";
+      validateCloudSettings(CLOUD_CONFIG.projectUrl, CLOUD_CONFIG.publicKey);
+      updateCloudButtons(true);
+      byId("cloud-status").textContent = "Cloud sync is ready. Sign in with Google to connect.";
     } catch (error) {
       byId("cloud-status").textContent = `Cloud settings could not be read: ${error.message}`;
       showToast(`Cloud settings could not be read: ${error.message}`, true);
@@ -1029,7 +1026,7 @@
   }
 
   async function getCloudClient() {
-    const config = validateCloudSettings(byId("cloud-project-url").value.trim(), byId("cloud-public-key").value.trim());
+    const config = validateCloudSettings(CLOUD_CONFIG.projectUrl, CLOUD_CONFIG.publicKey);
     if (state.cloudClient && state.cloudClientUrl === config.projectUrl && state.cloudClientKey === config.publicKey) return state.cloudClient;
     if (!state.cloudSdkPromise) {
       state.cloudSdkPromise = import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm")
@@ -1054,24 +1051,6 @@
       ? `Signed in${data.session.user.email ? ` as ${data.session.user.email}` : ""}. Sync is manual.`
       : "Configured. Sign in with Google to connect.";
     return state.cloudClient;
-  }
-
-  function saveCloudSettings(event) {
-    event.preventDefault();
-    try {
-      const settings = validateCloudSettings(
-        byId("cloud-project-url").value.trim(),
-        byId("cloud-public-key").value.trim()
-      );
-      localStorage.setItem(CLOUD_SETTINGS_KEY, JSON.stringify(settings));
-      state.cloudClient = null;
-      state.cloudClientUrl = "";
-      byId("cloud-status").textContent = "Settings saved on this device. Choose Continue with Google to sign in.";
-      updateCloudButtons(true);
-      showToast("Supabase settings saved. The public key is stored locally; never use a service-role key.");
-    } catch (error) {
-      showToast(error.message || "Could not save cloud settings.", true);
-    }
   }
 
   async function cloudSignIn() {
@@ -1264,7 +1243,6 @@
       byId("restore-snapshot-button").disabled = !byId("snapshot-select").value;
     });
     byId("protect-storage-button").addEventListener("click", requestPersistentStorage);
-    byId("cloud-settings-form").addEventListener("submit", saveCloudSettings);
     byId("cloud-sign-in-button").addEventListener("click", async () => {
       try {
         await cloudSignIn();
