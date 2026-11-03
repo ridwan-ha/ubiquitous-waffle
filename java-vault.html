@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f8">
+  <meta name="description" content="A private, local-first journal for your Java lessons, code, and learning notes.">
+  <link rel="icon" type="image/svg+xml" href="./java-vault-icon.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Ope' Code Vault — learning library</title>
+  <link rel="stylesheet" href="java-vault.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="java-vault.html" aria-label="Ope' Code Vault home">
+        <span class="brand-mark" aria-hidden="true">OPe</span>
+        <span class="brand-name">Ope' <span>Code Vault</span><small>YOUR LEARNING LIBRARY</small></span>
+      </a>
+
+      <button class="new-lesson-button" id="new-lesson-button" type="button">
+        <span aria-hidden="true">＋</span> New lesson <kbd>N</kbd>
+      </button>
+
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="side-nav">
+        <button class="nav-item active" type="button" data-view="overview"><span class="nav-icon" aria-hidden="true">⌂</span> Overview</button>
+        <button class="nav-item" type="button" data-view="lessons"><span class="nav-icon" aria-hidden="true">▤</span> All lessons <span class="nav-count" id="lesson-nav-count">0</span></button>
+        <button class="nav-item" type="button" data-view="study"><span class="nav-icon" aria-hidden="true">✎</span> Study due <span class="nav-count" id="due-nav-count">0</span></button>
+        <button class="nav-item" type="button" data-view="review"><span class="nav-icon" aria-hidden="true">↻</span> Review later <span class="nav-count" id="review-nav-count">0</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="local-card">
+          <span class="local-indicator" aria-hidden="true"></span>
+          <div><strong>Saved on this device</strong><small>Private local library</small></div>
+        </div>
+        <button class="nav-item settings-link" type="button" data-view="settings"><span class="nav-icon" aria-hidden="true">⚙</span> Settings &amp; backup</button>
+        <p class="sidebar-footnote">Your code stays in this browser unless you choose AI review.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>My workspace</span><span class="breadcrumb-separator">/</span><strong id="breadcrumb-current">Overview</strong></div>
+        <div class="topbar-actions">
+          <label class="search-box" for="search-input"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search lessons, topics..." autocomplete="off"><kbd>⌘ K</kbd></label>
+          <button class="icon-button" id="backup-button" type="button" aria-label="Open backup settings" title="Backup and settings">⇧</button>
+          <span class="avatar" aria-label="Your library">JV</span>
+        </div>
+      </header>
+
+      <section class="page-content">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow" id="page-eyebrow">YOUR PROGRESS, IN ONE PLACE</p>
+            <h1 id="page-title"> My vault<span class="heading-dot">.</span></h1>
+            <p class="page-subtitle" id="page-subtitle">A calm place to keep the code you’ve learned and the ideas behind it.</p>
+          </div>
+          <button class="primary-button heading-create" type="button" data-create><span aria-hidden="true">＋</span> Save a lesson</button>
+        </div>
+
+        <section class="stats-grid" id="stats-grid" aria-label="Learning statistics">
+          <article class="stat-card"><span class="stat-icon mint" aria-hidden="true">▤</span><div><span class="stat-label">Lessons saved</span><strong id="stat-lessons">0</strong><small>Every step counts</small></div></article>
+          <article class="stat-card"><span class="stat-icon lilac" aria-hidden="true">◈</span><div><span class="stat-label">Topics explored</span><strong id="stat-topics">0</strong><small>Curiosity in action</small></div></article>
+          <article class="stat-card"><span class="stat-icon peach" aria-hidden="true">↻</span><div><span class="stat-label">To revisit</span><strong id="stat-review">0</strong><small>Keep it fresh</small></div></article>
+        </section>
+
+        <div class="library-toolbar" id="library-toolbar">
+          <div class="toolbar-title"><h2 id="list-title">Recent lessons</h2><span class="result-count" id="result-count">0 lessons</span></div>
+          <div class="toolbar-controls">
+            <label class="select-wrap"><span class="sr-only">Filter lessons by status</span><select id="status-filter"><option value="all">All statuses</option><option value="review">Review later</option><option value="confident">Confident</option></select></label>
+            <label class="select-wrap"><span class="sr-only">Sort lessons</span><select id="sort-filter"><option value="newest">Recently added</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select></label>
+          </div>
+        </div>
+
+        <div class="topic-filter-row" id="topic-filter-row" hidden>
+          <span>TOPICS</span><div class="topic-filter-list" id="topic-filter-list"></div>
+        </div>
+
+        <section class="lesson-grid" id="lesson-grid" aria-live="polite"></section>
+        <section class="empty-state" id="empty-state" hidden>
+          <span class="empty-illustration" aria-hidden="true">&lt;/&gt;</span>
+          <p class="eyebrow" id="empty-eyebrow">YOUR FIRST ENTRY</p>
+          <h2 id="empty-title">Make room for what’s next.</h2>
+          <p id="empty-message">Save your first lesson here. Add the code, a few notes, and what clicked for you.</p>
+          <button class="primary-button" type="button" data-create><span aria-hidden="true">＋</span> Save your first lesson</button>
+        </section>
+
+        <section class="settings-view" id="settings-view" hidden>
+          <div class="settings-card">
+            <div class="settings-card-heading"><span class="settings-icon">⌑</span><div><h2>Your data &amp; backups</h2><p>Lessons are saved in this browser on this device.</p></div></div>
+            <div class="notice notice-warm"><strong>Back up your library.</strong> Browser storage can be cleared or lost if you change devices. Export a backup regularly and keep it somewhere safe.</div>
+            <div class="settings-actions">
+              <button class="secondary-button" id="export-button" type="button">↓ Export backup</button>
+              <button class="secondary-button" id="import-button" type="button">↑ Import backup</button>
+              <input id="import-file" type="file" accept="application/json,.json" hidden>
+            </div>
+            <div class="recovery-controls">
+              <label class="field-label" for="snapshot-select">Automatic restore points
+                <select id="snapshot-select"><option value="">Loading restore points…</option></select>
+              </label>
+              <button class="secondary-button" id="restore-snapshot-button" type="button" disabled>Restore selected point</button>
+              <button class="secondary-button" id="restore-legacy-button" type="button" hidden>Restore older browser copy</button>
+            </div>
+            <div class="settings-actions">
+              <button class="secondary-button" id="protect-storage-button" type="button">Protect storage on this device</button>
+            </div>
+            <p class="settings-footnote" id="storage-status" role="status">Automatic restore points are kept on this device. Export a backup for protection from device loss or browser data clearing.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-heading"><span class="settings-icon ai-icon">✳</span><div><h2>AI learning coach <span class="optional-pill">OPTIONAL</span></h2><p>Get feedback on your code and your explanation of the lesson.</p></div></div>
+            <div class="notice notice-blue"><strong>Your choice, every time.</strong> Nothing is sent until you open a lesson and choose “Review with AI.” The AI provider will receive that lesson’s code and notes. AI feedback is educational guidance, not a guarantee of correctness.</div>
+            <form id="ai-settings-form" class="ai-settings-form">
+              <label>Connection
+                <select id="ai-provider">
+                  <option value="ollama">Ollama (local model)</option>
+                  <option value="compatible">OpenAI-compatible API</option>
+                </select>
+              </label>
+              <label>Endpoint
+                <input id="ai-endpoint" type="url" required spellcheck="false">
+                <small>Ollama: http://localhost:11434 · Remote APIs must use HTTPS.</small>
+              </label>
+              <label>Model name
+                <input id="ai-model" type="text" required maxlength="120" placeholder="e.g. qwen2.5-coder:7b">
+              </label>
+              <label id="ai-key-label">API key <span class="muted">(optional for compatible APIs)</span>
+                <input id="ai-key" type="password" autocomplete="off" maxlength="500" placeholder="Used for this session only">
+                <small>The key is never saved in your library or browser storage. A client-side app is not suitable for protecting paid API keys in commercial use.</small>
+              </label>
+              <div class="form-actions"><button class="primary-button" type="submit">Save AI settings</button><span class="form-feedback" id="ai-settings-feedback" role="status"></span></div>
+            </form>
+          </div>
+
+          <div class="settings-card cloud-card">
+            <div class="settings-card-heading"><span class="settings-icon">☁</span><div><h2>Cloud sync <span class="coming-pill">SETUP REQUIRED</span></h2><p>Cloud storage is optional; local lessons remain available without it.</p></div></div>
+            <p class="settings-footnote">Cloud sign-in and sync need a Supabase project and Google OAuth configuration. They are not active until configured; your lesson data is not sent to Supabase by this app.</p>
+            <div class="notice notice-warm cloud-warning"><strong>Never enter a service-role key here.</strong> Use only your Supabase project URL and public anon/publishable key. Row-level security protects each account’s records.</div>
+            <form id="cloud-settings-form" class="ai-settings-form">
+              <label>Supabase project URL
+                <input id="cloud-project-url" type="url" autocomplete="url" spellcheck="false" placeholder="https://your-project.supabase.co">
+              </label>
+              <label>Public anon / publishable key
+                <input id="cloud-public-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste the public project key">
+              </label>
+              <div class="form-actions cloud-actions">
+                <button class="primary-button" type="submit">Save cloud settings</button>
+                <button class="secondary-button" id="cloud-sign-in-button" type="button">Continue with Google</button>
+                <button class="secondary-button" id="cloud-sync-button" type="button" disabled>Sync now</button>
+                <button class="text-button" id="cloud-sign-out-button" type="button" hidden>Sign out</button>
+                <span class="form-feedback" id="cloud-status" role="status" aria-live="polite">Not configured. Local storage remains active.</span>
+              </div>
+            </form>
+            <p class="settings-footnote">Sign-in does not sync automatically. Choose “Sync now” to merge this device with your account. Install the SQL policies and configure Google OAuth before connecting; see <a href="./SETUP.md" target="_blank" rel="noopener">setup instructions</a>.</p>
+          </div>
+          <p class="version-note">Ope' Code Vault · Local-first · Install from your browser menu when served on localhost or HTTPS</p>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="lesson-dialog" id="lesson-dialog" aria-labelledby="editor-title">
+    <form id="lesson-form">
+      <div class="dialog-header"><div><p class="eyebrow">YOUR LEARNING, CAPTURED</p><h2 id="editor-title">Save a lesson</h2></div><button class="dialog-close" type="button" data-close-editor aria-label="Close">×</button></div>
+      <div class="dialog-body">
+        <input id="lesson-id" type="hidden">
+        <label class="field-label">Lesson title <span class="required">*</span><input id="lesson-title" type="text" required maxlength="120" placeholder="e.g. Working with for loops"></label>
+        <p class="editor-hint" id="editor-hint">You can update the title, topics, notes, learning summary, code, and reminder later using “Edit lesson”.</p>
+        <label class="field-label">Topics <span class="field-hint">Separate with commas — edit these any time</span><input id="lesson-topics" type="text" maxlength="240" placeholder="loops, variables, arrays"></label>
+        <label class="field-label">Your comments &amp; notes<textarea id="lesson-notes" rows="3" maxlength="5000" placeholder="Add reminders, examples, or questions you want to remember..."></textarea></label>
+        <label class="field-label">What did you learn? <textarea id="lesson-learned" rows="3" maxlength="5000" placeholder="Explain the idea in your own words..."></textarea></label>
+        <label class="field-label">Practice question <span class="field-hint">Optional · ask yourself this before revealing your notes</span><textarea id="lesson-practice-question" rows="2" maxlength="1000" placeholder="e.g. What does the loop condition control?"></textarea></label>
+        <label class="field-label">Paste your Java code <span class="required">*</span><textarea id="lesson-code" class="code-input" rows="10" required maxlength="200000" spellcheck="false" placeholder="Paste your lesson code here..."></textarea><span class="field-hint">Up to 200,000 characters · saved only in this browser</span></label>
+        <label class="field-label">Learning status<select id="lesson-status"><option value="new">New</option><option value="review">Review later</option><option value="confident">Confident</option></select></label>
+        <label class="field-label">Reminder <span class="field-hint">Optional · choose a date and time to revisit this lesson</span><input id="lesson-reminder" type="datetime-local"><span class="field-hint">Some browsers can schedule notifications while closed, but background delivery is not guaranteed. Otherwise, reminders are checked while the app is open and when you reopen it.</span></label>
+      </div>
+      <div class="dialog-footer"><button class="secondary-button" type="button" data-close-editor>Cancel</button><button class="primary-button" type="submit">Save lesson</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="detail-title">
+    <div class="detail-header"><div><p class="eyebrow">LESSON NOTES</p><h2 id="detail-title"></h2></div><button class="dialog-close" type="button" data-close-detail aria-label="Close">×</button></div>
+    <div class="detail-body" id="detail-body"></div>
+    <div class="detail-footer">
+      <button class="text-button danger-text" id="delete-lesson-button" type="button">Delete lesson</button>
+      <div><button class="secondary-button" id="review-ai-button" type="button">✳ Review with AI</button><button class="secondary-button" id="edit-lesson-button" type="button">Edit lesson details</button></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="vault-storage.js" defer></script>
+  <script src="java-vault.js" defer></script>
+</body>
+</html>

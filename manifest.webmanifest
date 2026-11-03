@@ -1,0 +1,19 @@
+{
+  "id": "./java-vault.html",
+  "name": "Ope' Code Vault — Learning Library",
+  "short_name": "Ope' Code Vault",
+  "description": "A local-first journal for your Java lessons, code, and learning notes.",
+  "start_url": "./java-vault.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#f5f6f8",
+  "icons": [
+    {
+      "src": "./java-vault-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
